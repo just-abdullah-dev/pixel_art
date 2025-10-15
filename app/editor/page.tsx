@@ -32,10 +32,16 @@ const createNewFrame = (width: number, height: number): Frame => ({
   duration: 100,
 });
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+}
+
 export default function EditorPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   // Project state
   const [project, setProject] = useState<Project>({
@@ -71,7 +77,7 @@ export default function EditorPage() {
         const data = await res.json();
         setUser(data.user);
         setIsLoading(false);
-      } catch (error) {
+      } catch {
         router.push('/login');
       }
     };
@@ -100,6 +106,22 @@ export default function EditorPage() {
     }
   }, [historyIndex, history]);
 
+  // Save project
+  const saveProject = useCallback(async () => {
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project),
+      });
+      if (res.ok) {
+        alert('Project saved successfully!');
+      }
+    } catch {
+      alert('Failed to save project');
+    }
+  }, [project]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -118,7 +140,7 @@ export default function EditorPage() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo]);
+  }, [undo, redo, saveProject]);
 
   // Animation playback
   useEffect(() => {
@@ -200,21 +222,6 @@ export default function EditorPage() {
       saveToHistory(newProject);
       return newProject;
     });
-  };
-
-  const saveProject = async () => {
-    try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(project),
-      });
-      if (res.ok) {
-        alert('Project saved successfully!');
-      }
-    } catch (error) {
-      alert('Failed to save project');
-    }
   };
 
   const exportPNG = () => {

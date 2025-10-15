@@ -45,7 +45,7 @@ export default function SignupPage() {
       }
 
       router.push('/dashboard');
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
       setLoading(false);
     }

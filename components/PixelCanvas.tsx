@@ -29,15 +29,6 @@ export default function PixelCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(null);
-  const [previewCanvas, setPreviewCanvas] = useState<HTMLCanvasElement | null>(null);
-
-  // Initialize preview canvas
-  useEffect(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    setPreviewCanvas(canvas);
-  }, [width, height]);
 
   // Render the canvas
   const render = useCallback(() => {
@@ -51,7 +42,6 @@ export default function PixelCanvas({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw checkerboard background
-    const checkerSize = scale;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const isLight = (x + y) % 2 === 0;

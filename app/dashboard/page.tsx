@@ -14,9 +14,15 @@ interface Project {
   updatedAt: string;
 }
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,7 +46,7 @@ export default function DashboardPage() {
         }
 
         setIsLoading(false);
-      } catch (error) {
+      } catch {
         router.push('/login');
       }
     };
@@ -61,7 +67,7 @@ export default function DashboardPage() {
       if (res.ok) {
         setProjects(projects.filter((p) => p.id !== id));
       }
-    } catch (error) {
+    } catch {
       alert('Failed to delete project');
     }
   };
